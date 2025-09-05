@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🚗 بازی سری 🚗</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --game-size: 600px; /* اندازه اصلی بازی */
+    }
+
+    body {
+      background: linear-gradient(135deg, #1b2735 0%, #090a0f 100%);
+      color: #fff;
+      text-align: center;
+      font-family: 'Orbitron', Tahoma, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+      box-sizing: border-box;
+   
+    }
+
+    .container {
+        border: 2px solid rgba(0, 255, 234, 0.4);
+        border-radius: 25px;
+        padding: 25px;
+        background: rgba(15, 23, 42, 0.5);
+        box-shadow: 0 0 40px rgba(0, 220, 255, 0.2);
+    }
+
+    h2 {
+      margin-top: 0;
+      margin-bottom: 15px;
+      font-size: 2em;
+      text-shadow: 0 0 15px #00ffe0, 0 0 25px #00ffe0;
+      animation: pulsate 3s infinite ease-in-out;
+    }
+
+    #game {
+      position: relative;
+      margin: 0 auto;
+      width: var(--game-size);
+      height: var(--game-size);
+      background-color: #111;
+      background-image:
+        linear-gradient(rgba(0, 255, 234, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 234, 0.1) 1px, transparent 1px);
+      background-size: 40px 40px;
+      border: 4px solid #00ffea;
+      border-radius: 15px;
+      box-shadow: 0 0 25px rgba(0, 255, 200, 0.5);
+      transition: transform 0.2s;
+    }
+    
+    .city {
+      position: absolute;
+      font-size: 16px;
+      font-weight: bold;
+      color: #ffdd00;
+      text-shadow: 0 0 8px black;
+      background: rgba(255, 221, 0, 0.15);
+      border: 2px solid #ffdd00;
+      border-radius: 10px;
+      padding: 4px 8px;
+      animation: pulsate-city 4s infinite ease-in-out;
+    }
+    
+    #car {
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      background: url("https://files.prokerala.com/automobile/images/photo/full/lamborghini-aventador-90/lamborghini-aventador-s-roadster-exterior-top-view.jpg") no-repeat center/contain;
+      left: 0;
+      top: 0;
+      transition: all 0.1s linear;
+      filter: drop-shadow(0 0 5px #fff);
+    }
+
+    #car.has-passenger-glow { filter: drop-shadow(0 0 15px #0f0); }
+
+    .obstacle {
+      position: absolute;
+      width: 38px;
+      height: 38px;
+      background: url("https://trafficsaz.com/wp-content/uploads/2021/12/4da69a96349c72f2664a1370be671237.jpg") no-repeat center/contain;
+    }
+
+    #msg, #passenger {
+        margin-top: 15px;
+        font-size: 18px;
+        min-height: 25px;
+        transition: opacity 0.5s;
+    }
+    
+    #msg { color: #00ffea; text-shadow: 0 0 15px #00ffe0; }
+    #passenger { color: #5eff5e; text-shadow: 0 0 10px #0f0; }
+    #instructions { margin-top: 20px; font-size: 14px; color: #aaa; max-width: 90vw; }
+
+    #resetBtn {
+        margin-top: 20px; padding: 10px 20px; font-family: 'Orbitron', sans-serif;
+        font-size: 16px; background-color: #00ffea; color: #111; border: none;
+        border-radius: 8px; cursor: pointer; text-shadow: 0 0 5px #fff;
+        box-shadow: 0 0 15px #00ffea; transition: all 0.3s;
+    }
+    #resetBtn:hover { transform: scale(1.05); box-shadow: 0 0 25px #00ffea; }
+    .hidden { display: none; }
+
+    /* === تغییر در استایل کنترلر برای RTL === */
+    #touch-controls {
+        display: none;
+        position: fixed;
+        bottom: 30px;
+        right: 30px; /* انتقال به سمت راست */
+        left: auto;
+        transform: none;
+        z-index: 100;
+    }
+    #touch-controls .row { display: flex; justify-content: center; }
+    #touch-controls button {
+        width: 60px; height: 60px;
+        margin: 5px;
+        border: 2px solid #00ffea;
+        border-radius: 50%;
+        background: rgba(0, 255, 234, 0.1);
+        color: #00ffea;
+        font-size: 24px;
+        font-weight: bold;
+        cursor: pointer;
+        user-select: none;
+    }
+    #touch-controls button:active {
+        background: rgba(0, 255, 234, 0.3);
+        transform: scale(0.95);
+    }
+    .placeholder { width: 70px; height: 70px; }
+
+    /* واکنش‌گرایی برای موبایل */
+    @media (max-width: 768px) {
+        body { padding: 10px; justify-content: start; }
+        .container { padding: 15px; border: none; background: none; box-shadow: none; }
+        h2 { font-size: 1.5em; }
+        :root { --game-size: 90vw; }
+        #game { border-width: 2px; background-size: calc(var(--game-size) / 15); }
+        #car, .obstacle { width: calc(var(--game-size) / 15); height: calc(var(--game-size) / 15); }
+        .city { font-size: 12px; padding: 2px 4px; }
+        #instructions { display: none; }
+        
+        #touch-controls { display: block; }
+    }
+
+    /* انیمیشن‌ها */
+    @keyframes pulsate { 0%, 100% { text-shadow: 0 0 15px #00ffe0, 0 0 25px #00ffe0; } 50% { text-shadow: 0 0 25px #00ffe0, 0 0 40px #00ffe0; } }
+    @keyframes pulsate-city { 0%, 100% { transform: scale(1); box-shadow: 0 0 10px rgba(255,221,0,0.3); } 50% { transform: scale(1.05); box-shadow: 0 0 20px rgba(255,221,0,0.7); } }
+    .shake { animation: shake-animation 0.4s; }
+    @keyframes shake-animation { 10%, 90% { transform: translateX(-2px); } 20%, 80% { transform: translateX(2px); } 30%, 50%, 70% { transform: translateX(-4px); } 40%, 60% { transform: translateX(4px); } }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>🚗 بازی نژادعلی 🚗</h2>
+    <div id="game">
+      <div id="car"></div>
+    </div>
+    <div id="msg">با کلیدهای جهت‌نما حرکت کنید</div>
+    <div id="passenger"></div>
+    <button id="resetBtn" class="hidden">بازی دوباره</button>
+    <div id="instructions">
+      <strong>راهنما:</strong> از شهر "چولیچا" شروع کنید، "نژادعلی" را از "ارومیه" سوار کرده و به "تهران" برسانید!
+    </div>
+  </div>
+
+  <div id="touch-controls">
+    <div class="row">
+        <button id="btn-up">▲</button>
+    </div>
+    <div class="row">
+        <button id="btn-right">▶</button> <div class="placeholder"></div>
+        <button id="btn-left">◀</button>  </div>
+    <div class="row">
+        <button id="btn-down">▼</button>
+    </div>
+  </div>
+
+  <audio id="bgMusic" src="https://dl.musiclazem.ir/1402/03/12/Ashkin%200098%20-%20Mikham%20Beresonamet.mp3" loop></audio>
+  <audio id="hornSound" src="https://actions.google.com/sounds/v1/transportation/car_horn.ogg"></audio>
+  <audio id="successSound" src="https://actions.google.com/sounds/v1/achievements/achievement_bell.ogg"></audio>
+  <audio id="pickupSound" src="https://actions.google.com/sounds/v1/doors/door_open_close.ogg"></audio>
+  
+  <script>
+    // کدهای جاوا اسکریپت بدون تغییر باقی می‌مانند
+    const game = document.getElementById("game");
+    const car = document.getElementById("car");
+    const msg = document.getElementById("msg");
+    const passenger = document.getElementById("passenger");
+    const resetBtn = document.getElementById("resetBtn");
+    
+    const bgMusic = document.getElementById("bgMusic");
+    const hornSound = document.getElementById("hornSound");
+    const successSound = document.getElementById("successSound");
+    const pickupSound = document.getElementById("pickupSound");
+
+    let gameSize = 600;
+    const step = 40;
+    let cellCount = gameSize / step;
+
+    let carX, carY;
+    let hasPassenger = false;
+    let gameStarted = false;
+    let gameOver = false;
+    const cities = [];
+    const obstacles = [];
+
+    function adjustGameSize() {
+        const gameContainer = document.getElementById('game');
+        if (window.innerWidth <= 768) {
+            const newSize = gameContainer.offsetWidth;
+            gameSize = newSize - (newSize % step);
+            cellCount = gameSize / step;
+        }
+    }
+
+    function rand() {
+      return Math.floor(Math.random() * cellCount) * step;
+    }
+
+    function showMsg(text) {
+        msg.style.opacity = '0';
+        setTimeout(() => { msg.innerText = text; msg.style.opacity = '1'; }, 300);
+    }
+    
+    function showPassengerStatus(text) {
+        passenger.style.opacity = '0';
+        setTimeout(() => { passenger.innerText = text; passenger.style.opacity = '1'; }, 300);
+    }
+
+    function setupGame() {
+        adjustGameSize();
+        
+        const cityData = [ { name: "تهران", x: rand(), y: rand() }, { name: "ارومیه", x: rand(), y: rand() }, { name: "چولیچا", x: rand(), y: rand() }];
+        cities.push(...cityData);
+
+        cities.forEach(city => {
+            const div = document.createElement("div");
+            div.className = "city"; div.innerText = city.name;
+            div.style.left = city.x + "px"; div.style.top = city.y + "px";
+            game.appendChild(div);
+        });
+
+        carX = cities.find(c => c.name === "چولیچا").x;
+        carY = cities.find(c => c.name === "چولیچا").y;
+        car.style.left = carX + "px"; car.style.top = carY + "px";
+
+        for (let i = 0; i < 15; i++) {
+            const ox = rand(); const oy = rand();
+            const isCity = cities.some(c => c.x === ox && c.y === oy);
+            const isStart = (ox === carX && oy === carY);
+            if (!isCity && !isStart) { obstacles.push({ x: ox, y: oy }); }
+        }
+
+        obstacles.forEach(ob => {
+            const div = document.createElement("div");
+            div.className = "obstacle";
+            div.style.left = ob.x + "px"; div.style.top = ob.y + "px";
+            game.appendChild(div);
+        });
+    }
+
+    function moveCar(direction) {
+        if (gameOver) return;
+
+        if (!gameStarted) {
+            bgMusic.volume = 0.3;
+            const playPromise = bgMusic.play();
+            if (playPromise !== undefined) {
+                playPromise.catch(error => console.log("برای پخش موزیک، روی صفحه کلیک کنید."));
+            }
+            gameStarted = true;
+        }
+
+        let newX = carX;
+        let newY = carY;
+
+        if (direction === "ArrowUp") newY -= step;
+        else if (direction === "ArrowDown") newY += step;
+        else if (direction === "ArrowLeft") { newX -= step; car.style.transform = 'scaleX(1)'; }
+        else if (direction === "ArrowRight") { newX += step; car.style.transform = 'scaleX(-1)'; }
+        else return;
+
+        if (newX < 0 || newY < 0 || newX >= gameSize || newY >= gameSize) return;
+
+        if (obstacles.some(ob => ob.x === newX && ob.y === newY)) {
+            showMsg("⛔ مسیر بسته است!");
+            game.classList.add('shake');
+            setTimeout(() => game.classList.remove('shake'), 400);
+            return;
+        }
+
+        carX = newX; carY = newY;
+        car.style.left = carX + "px"; car.style.top = carY + "px";
+        checkCityInteraction();
+    }
+
+    function checkCityInteraction() {
+        const currentCity = cities.find(city => carX === city.x && carY === city.y);
+        if (!currentCity) return;
+
+        hornSound.play();
+        if (currentCity.name === "ارومیه") {
+            if (!hasPassenger) {
+                hasPassenger = true; pickupSound.play();
+                car.classList.add("has-passenger-glow");
+                showPassengerStatus("👤 نژادعلی سوار شد! مقصد: تهران");
+                showMsg("سریع حرکت کن!");
+            } else { showMsg("👤 نژادعلی از قبل سوار شده!"); }
+        } else if (currentCity.name === "چولیچا") {
+            showMsg("اینجا نقطه شروع بود.");
+        } else if (currentCity.name === "تهران") {
+            if (hasPassenger) {
+                successSound.play();
+                showMsg("🎉 عالی! به تهران رسیدی.");
+                showPassengerStatus("✅ نژادعلی به مقصد رسید.");
+                car.classList.remove("has-passenger-glow");
+                gameOver = true;
+                resetBtn.classList.remove("hidden");
+            } else { showMsg("اول باید نژادعلی رو از ارومیه سوار کنی!"); }
+        }
+    }
+
+    document.addEventListener("keydown", e => moveCar(e.key));
+    document.getElementById('btn-up').addEventListener('click', () => moveCar('ArrowUp'));
+    document.getElementById('btn-down').addEventListener('click', () => moveCar('ArrowDown'));
+    document.getElementById('btn-left').addEventListener('click', () => moveCar('ArrowLeft'));
+    document.getElementById('btn-right').addEventListener('click', () => moveCar('ArrowRight'));
+    resetBtn.addEventListener('click', () => location.reload());
+
+    setupGame();
+  </script>
+</body>
+</html>
