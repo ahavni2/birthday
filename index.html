@@ -2,7 +2,7 @@
 <html lang="fa">
 <head>
     <meta charset="UTF-8">
-    <title>تولدت مبارک!(روز دوم)</title>
+    <title>تولدت مبارک!</title>
     
     <link rel="icon" type="image/png" href="gift.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -19,7 +19,7 @@
             transform: translate(-50%, -50%) scale(0);
             width: 200px; cursor: pointer; z-index: 10;
             animation: popIn 1.5s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards, 
-                       shake 1.2s ease-in-out 1.5s infinite alternate;
+                        shake 1.2s ease-in-out 1.5s infinite alternate;
         }
         .gift-bag.opened { animation: openGift 0.5s ease-in forwards; }
         @keyframes popIn {
@@ -92,7 +92,7 @@
             display: flex; align-items: center; justify-content: center; margin-top: 10px; width: 100%;
             direction: ltr;
         }
-        .volume-controls span { cursor: pointer; font-size: 1.5rem; margin-right: 10px; /* تغییر margin-left به margin-right */ }
+        .volume-controls span { cursor: pointer; font-size: 1.5rem; margin-right: 10px; }
         
 
         input[type="range"] {
@@ -109,6 +109,59 @@
             width: 18px; height: 18px; background: #0F0;
             border-radius: 50%; box-shadow: 0 0 10px #0F0;
         }
+        
+        /* کد جدید برای استایل منو */
+        .menu {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0); /* در ابتدا مخفی و کوچک */
+            opacity: 0;
+            z-index: 30;
+            background: rgba(26, 3, 71, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            border: 2px solid #a259ff;
+            box-shadow: 0 0 30px #a259ff;
+            transition: all 0.5s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+            pointer-events: none; /* در حالت مخفی کلیک نشود */
+        }
+
+        .menu.show {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1); /* نمایش با انیمیشن */
+            pointer-events: auto;
+        }
+
+        .menu h2 {
+            color: #f0f0f0;
+            font-size: 3rem;
+            margin-bottom: 30px;
+            text-shadow: 0 0 10px #fff;
+        }
+
+        .menu button {
+            font-family: 'Lalezar', sans-serif;
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 15px;
+            font-size: 1.8rem;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            background: #a259ff;
+            color: #fff;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(162, 89, 255, 0.4);
+        }
+
+        .menu button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(162, 89, 255, 0.6);
+        }
     </style>
 </head>
 <body>
@@ -117,6 +170,12 @@
     <div class="message" id="message">
         <h1 id="greeting-text2">403</h1>
         <p id="greeting-text">403</p>
+    </div>
+
+    <div class="menu" id="day-menu">
+        <h2>یک روز را انتخاب کن</h2>
+        <button id="btn-day2">🎁 روز دوم 🎁</button>
+        <button id="btn-day3">✨ روز سوم ✨</button>
     </div>
 
     <audio id="music" src="music.mp3" loop></audio>
@@ -136,12 +195,12 @@
             <span id="muteBtn">🔊</span>
             <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.7">
         </div>
-<p class="signature">Ai©️</p>
-
+        <p class="signature">Ai©️</p>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
     <script>
+        // === بخش اول: تعریف متغیرها ===
         const giftBag = document.getElementById('giftBag');
         const message = document.getElementById('message');
         const music = document.getElementById('music');
@@ -155,21 +214,53 @@
         const currentTime = document.getElementById('currentTime');
         const totalDuration = document.getElementById('totalDuration');
 
+        // متغیرهای جدید برای منو
+        const dayMenu = document.getElementById('day-menu');
+        const btnDay2 = document.getElementById('btn-day2');
+        const btnDay3 = document.getElementById('btn-day3');
+
+        // === بخش دوم: تعریف توابع اصلی ===
+
+        // این تابع جشن روز دوم را شروع می‌کند (همان کاری که قبلاً با کلیک روی هدیه انجام می‌شد)
+        function startDay2Celebration() {
+            dayMenu.classList.remove('show'); // منو را مخفی کن
+            
+            setTimeout(() => {
+                message.classList.add('show');
+                playerContainer.classList.add('show');
+                music.volume = volumeSlider.value;
+                music.play().then(() => {
+                    playPauseBtn.textContent = '⏸️';
+                });
+                launchConfetti();
+                setInterval(drawMatrix, 50);
+            }, 500); // تاخیر برای انیمیشن بهتر
+        }
+
+        // این تابع به صفحه روز سوم می‌رود
+        function goToDay3() {
+            // نام فایل HTML روز سوم را در اینجا قرار دهید
+            window.location.href = 'day3.html'; 
+        }
+
+        // === بخش سوم: اتصال رویدادها (Event Listeners) ===
+
+        // 1. رویداد کلیک روی هدیه: فقط منو را نشان می‌دهد
         giftBag.addEventListener('click', () => {
             giftBag.classList.add('opened');
-            setTimeout(() => message.classList.add('show'), 300);
-            
-            music.play().then(() => {
-                playPauseBtn.textContent = '⏸️';
-            });
-            music.volume = volumeSlider.value;
-            
-            playerContainer.classList.add('show');
-            launchConfetti();
-            setInterval(drawMatrix, 50);
             setTimeout(() => giftBag.style.display = 'none', 500);
+            
+            // نمایش منو با کمی تاخیر
+            setTimeout(() => {
+                dayMenu.classList.add('show');
+            }, 400);
         });
-        
+
+        // 2. رویداد کلیک روی دکمه‌های منو
+        btnDay2.addEventListener('click', startDay2Celebration);
+        btnDay3.addEventListener('click', goToDay3);
+
+        // 3. بقیه رویدادهای مربوط به پلیر موسیقی (بدون تغییر)
         function formatTime(seconds) {
             const minutes = Math.floor(seconds / 60);
             const secs = Math.floor(seconds % 60);
@@ -220,6 +311,7 @@
             }
         });
         
+        // === بخش چهارم: کدهای مربوط به انیمیشن پس‌زمینه و متن (بدون تغییر) ===
         const canvas = document.getElementById('matrix');
         const ctx = canvas.getContext('2d');
         canvas.height = window.innerHeight;
@@ -245,7 +337,6 @@
             }
         }
         
-
         function launchConfetti() {
             const duration = 4 * 60 * 1000;
             const animationEnd = Date.now() + duration;
@@ -266,19 +357,10 @@
 
         window.addEventListener('DOMContentLoaded', () => {
             const greetingParagraph = document.getElementById('greeting-text');
-const greetingParagraph2 = document.getElementById('greeting-text2');
+            const greetingParagraph2 = document.getElementById('greeting-text2');
                 greetingParagraph.textContent =`یک خنده کن ای گول`;
-greetingParagraph2.textContent = `🎉 10100 🎉`;
-
-         
+                greetingParagraph2.textContent = `🎉 10100 🎉`;
         });
     </script>
 </body>
-
 </html>
-
-
-
-
-
-
