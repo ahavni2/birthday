@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Goodbye Jafar Party!</title>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: linear-gradient(135deg, #1a1a1a 0%, #333333 100%);
+            font-family: 'Vazirmatn', sans-serif;
+            color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .background-text {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            font-size: 3.5em;
+            font-weight: bold;
+            color: rgba(255, 255, 255, 0.04); /* کمی واضح‌تر برای دیده شدن */
+            line-height: 1.1;
+            word-wrap: break-word;
+            user-select: none;
+            font-family: 'monospace';
+            padding: 20px;
+            box-sizing: border-box;
+            text-shadow: 0 0 5px rgba(0,0,0,0.5);
+            pointer-events: none;
+            /* z-index: -1; حذف شد تا متن روی گرادیانت پس‌زمینه نمایش داده شود */
+        }
+
+        .rotating-text-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 300px;
+            height: 300px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            perspective: 1000px;
+            z-index: 10; /* این عنصر در بالاترین لایه قرار دارد */
+        }
+
+        .rotating-text {
+            font-size: 2.5em;
+            font-weight: 700;
+            color: #ffcc00;
+            text-shadow: 0 0 15px rgba(255, 204, 0, 0.8), 0 0 25px rgba(255, 204, 0, 0.6);
+            animation: rotate3D 2s infinite linear;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 15px;
+            text-align: center;
+            line-height: 1.4;
+            letter-spacing: 1px;
+            border: 2px solid #ffcc00;
+        }
+
+        @keyframes rotate3D {
+            0% { transform: rotateY(0deg); }
+            100% { transform: rotateY(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <audio id="myAudio" src="https://dl.mahanmusic.net/Song/jafar/Jafar%20Goodbye%20Party-128.mp3" loop autoplay muted></audio>
+    
+    <div class="background-text" id="bg-container"></div>
+
+    <div class="rotating-text-container">
+        <div class="rotating-text">
+            اینجا گودبای پارتی جعفره
+        </div>
+    </div>
+
+    <script>
+        const audio = document.getElementById('myAudio');
+
+        // 1. پخش خودکار و بی‌صدا
+        // به محض بارگذاری صفحه، مرورگر به خاطر وجود muted و autoplay پخش را شروع می‌کند.
+        // ما فقط باید صدا را در اولین تعامل کاربر فعال کنیم.
+       audio.play().catch(error => {
+                console.error("خطا در پخش خودکار اولیه:", error);
+            });
+
+            // تابع فعال‌سازی صدا با اولین کلیک
+            function unmuteAudio() {
+                audio.muted = false;
+                // فقط یک بار اجرا شود
+                document.removeEventListener('click', unmuteAudio);
+            }
+            document.addEventListener('click', unmuteAudio);
+        // 2. پر کردن پس‌زمینه با عدد 403
+        const container = document.getElementById('bg-container');
+        const textToRepeat = '403 ';
+        const repetitions = Math.ceil((window.innerWidth * window.innerHeight) / 50); 
+        container.innerText = textToRepeat.repeat(repetitions);
+    </script>
+
+</body>
+</html>
