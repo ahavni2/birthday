@@ -177,6 +177,7 @@
         <button id="btn-day2">🎁 روز دوم 🎁</button>
         <button id="btn-day3">✨ روز سوم ✨</button>
         <button id="btn-day4">✨ روز چهارم ✨</button>
+         <button id="btn-day6">✨ روز ششم ✨</button>
     </div>
 
     <audio id="music" src="music.mp3" loop></audio>
@@ -220,6 +221,7 @@
         const btnDay2 = document.getElementById('btn-day2');
         const btnDay3 = document.getElementById('btn-day3');
 const btnDay4 = document.getElementById('btn-day4');
+        const btnDay6 = document.getElementById('btn-day6');
         // === بخش دوم: تعریف توابع اصلی ===
 
         // این تابع جشن روز دوم را شروع می‌کند (همان کاری که قبلاً با کلیک روی هدیه انجام می‌شد)
@@ -246,6 +248,10 @@ const btnDay4 = document.getElementById('btn-day4');
         function goToDay4() {
             // نام فایل HTML روز سوم را در اینجا قرار دهید
             window.location.href = 'day4.html'; 
+        }
+                function goToDay4() {
+            // نام فایل HTML روز سوم را در اینجا قرار دهید
+            window.location.href = 'day6.html'; 
         }
         // === بخش سوم: اتصال رویدادها (Event Listeners) ===
 
@@ -368,4 +374,5 @@ btnDay4.addEventListener('click', goToDay4);
     </script>
 </body>
 </html>
+
 
