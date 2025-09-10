@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>یک سوال مهم</title>
+    <style>
+        body {
+            font-family: 'Vazirmatn', sans-serif; /* یک فونت فارسی زیبا */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        .container {
+            text-align: center;
+            background-color: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            font-size: 2.5em;
+        }
+        h2 {
+            font-size: 1.8em;
+            margin-bottom: 30px;
+        }
+        .buttons button {
+            font-family: inherit;
+            font-size: 1.2em;
+            padding: 10px 25px;
+            margin: 0 10px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .buttons button:hover {
+            transform: scale(1.05);
+        }
+        #yes-btn {
+            background-color: #28a745;
+            color: white;
+        }
+        #no-btn {
+            background-color: #dc3545;
+            color: white;
+        }
+        /* کلاس برای مخفی کردن عناصر */
+        .hidden {
+            display: none;
+        }
+    </style>
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+
+    <div class="container" id="main-container">
+        
+        <div id="question-section">
+            <h2>میخوای؟</h2>
+            <div class="buttons">
+                <button id="yes-btn">میخوام</button>
+                <button id="no-btn">نوموخوام</button>
+            </div>
+        </div>
+
+        <div id="response-section" class="hidden">
+            <h1>آفرین!</h1>
+        </div>
+
+        <div id="video-section" class="hidden">
+            <video id="my-video" width="600" controls>
+                <source src="https://aspb28.cdn.asset.aparat.com/aparat-video/793612f1150a345641242a14098158d238288189-144p.mp4?wmsAuthSign=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbiI6ImJmMDdkM2IxODBhYzBmZTliNzA5NjQwOGU3ZmVhOGRhIiwiZXhwIjoxNzU3NTQ3MjIzLCJpc3MiOiJTYWJhIElkZWEgR1NJRyJ9.eLuvzOH-DN44UEQYfdZxM09ZOXkvNHasxWqN6mOWrJA" type="video/mp4">
+                مرورگر شما این ویدئو را پشتیبانی نمی‌کند.
+            </video>
+        </div>
+
+    </div>
+
+    <script>
+        // گرفتن عناصر از صفحه
+        const questionSection = document.getElementById('question-section');
+        const responseSection = document.getElementById('response-section');
+        const videoSection = document.getElementById('video-section');
+        const videoPlayer = document.getElementById('my-video');
+
+        const yesBtn = document.getElementById('yes-btn');
+        const noBtn = document.getElementById('no-btn');
+
+        // تعریف رویداد برای دکمه "میخوام"
+        yesBtn.addEventListener('click', () => {
+            questionSection.classList.add('hidden'); // بخش سوال را مخفی کن
+            videoSection.classList.remove('hidden'); // بخش ویدئو را نمایش بده
+            videoPlayer.play(); // ویدئو را پخش کن
+        });
+
+        // تعریف رویداد برای دکمه "نوموخوام"
+        noBtn.addEventListener('click', () => {
+            questionSection.classList.add('hidden'); // بخش سوال را مخفی کن
+            responseSection.classList.remove('hidden'); // بخش پاسخ "آفرین" را نمایش بده
+        });
+    </script>
+
+</body>
+</html>
