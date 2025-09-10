@@ -116,9 +116,11 @@
         .menu {
             position: absolute;
             top: 50%;
+            max-height: 80vh;
             left: 50%;
             transform: translate(-50%, -50%) scale(0); /* در ابتدا مخفی و کوچک */
             opacity: 0;
+            overflow-y: auto;
             z-index: 99999;
             background: rgba(26, 3, 71, 0.7);
             backdrop-filter: blur(10px);
@@ -176,11 +178,11 @@
 
     <div class="menu" id="day-menu">
         <h2>یک روز را انتخاب کن</h2>
-        <button id="btn-day2">🎁 روز دوم 🎁</button>
-        <button id="btn-day3">✨ روز سوم ✨</button>
-        <button id="btn-day4">✨ روز چهارم ✨</button>
-         <button id="btn-day6">✨ روز ششم ✨</button>
-                 <button id="btn-day8">😗 روز هشتم 🦇</button>
+   <button id="btn-day8">😗 روز هشتم 🦇</button>
+    <button id="btn-day6">✨ روز ششم ✨</button>
+    <button id="btn-day4">✨ روز چهارم ✨</button>
+    <button id="btn-day3">✨ روز سوم ✨</button>
+    <button id="btn-day2">🎁 روز دوم 🎁</button>
 
     </div>
 
@@ -385,6 +387,7 @@ btnDay4.addEventListener('click', goToDay4);
     </script>
 </body>
 </html>
+
 
 
 
