@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🚗 بازی نژادعلی: ماموریت جدید 🚗</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --game-size: 600px; /* اندازه اصلی بازی */
+      --primary-glow: #00ffea;
+      --secondary-glow: #ffdd00;
+      --danger-glow: #ff3333;
+      --passenger-glow: #5eff5e;
+      --dark-bg: #0d0f18;
+      --dark-blue: #1b2735;
+      --cell-size: 40px;
+    }
+
+    body {
+      background-color: var(--dark-bg);
+      background-image: url('https://www.transparenttextures.com/patterns/stardust.png');
+      color: #fff;
+      text-align: center;
+      font-family: 'Orbitron', Tahoma, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+
+    .container {
+        border: 2px solid rgba(0, 255, 234, 0.4);
+        border-radius: 25px;
+        padding: 25px;
+        background: rgba(15, 23, 42, 0.7);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 0 50px rgba(0, 220, 255, 0.25);
+        z-index: 2;
+    }
+
+    h2 {
+      margin-top: 0;
+      margin-bottom: 15px;
+      font-size: 2em;
+      text-shadow: 0 0 15px var(--primary-glow), 0 0 25px var(--primary-glow);
+      animation: pulsate-title 3s infinite ease-in-out;
+    }
+
+    #game {
+      position: relative;
+      margin: 0 auto;
+      width: var(--game-size);
+      height: var(--game-size);
+      background-color: transparent;
+      background-image:
+        linear-gradient(var(--primary-glow, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, var(--primary-glow, 0.1) 1px, transparent 1px);
+      background-size: var(--cell-size) var(--cell-size);
+      border: 4px solid var(--primary-glow);
+      border-radius: 15px;
+      box-shadow: 0 0 25px rgba(0, 255, 200, 0.5), inset 0 0 15px rgba(0, 255, 200, 0.3);
+      transition: transform 0.2s;
+    }
+    
+    .city {
+      position: absolute;
+      font-size: 16px;
+      font-weight: bold;
+      color: var(--secondary-glow);
+      text-shadow: 0 0 8px black;
+      background: rgba(255, 221, 0, 0.15);
+      border: 2px solid var(--secondary-glow);
+      border-radius: 10px;
+      padding: 4px 8px;
+      z-index: 5;
+      transition: all 0.3s ease;
+    }
+    
+    .city::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 150%;
+      height: 150%;
+      background: radial-gradient(circle, transparent 40%, currentColor 70%);
+      border-radius: 50%;
+      opacity: 0.2;
+      animation: city-beacon 3s infinite;
+    }
+    .city.city-start { color: #87CEEB; border-color: #87CEEB; }
+    .city.city-pickup { color: var(--passenger-glow); border-color: var(--passenger-glow); }
+    .city.city-destination { color: var(--secondary-glow); border-color: var(--secondary-glow); }
+
+
+    #car {
+      position: absolute;
+      width: var(--cell-size);
+      height: var(--cell-size);
+      background: url("car.png") no-repeat center/contain;
+      left: 0;
+      top: 0;
+      transition: all 0.1s linear;
+      filter: drop-shadow(0 0 5px #fff);
+      z-index: 10;
+    }
+    
+    #car::after { /* Engine Glow */
+        content: '';
+        position: absolute;
+        bottom: 5px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 10px;
+        height: 10px;
+        background: var(--primary-glow);
+        border-radius: 50%;
+        box-shadow: 0 0 10px var(--primary-glow), 0 0 15px var(--primary-glow);
+        animation: engine-glow 2s infinite ease-in-out;
+    }
+
+    #car.has-passenger-glow { 
+        filter: drop-shadow(0 0 15px var(--passenger-glow)); 
+    }
+    #car.has-passenger-glow::after { /* Passenger glow overrides engine */
+        background: var(--passenger-glow);
+        box-shadow: 0 0 15px var(--passenger-glow), 0 0 25px var(--passenger-glow);
+    }
+
+    .obstacle {
+      position: absolute;
+      width: calc(var(--cell-size) - 2px);
+      height: calc(var(--cell-size) - 2px);
+      background: url("https://trafficsaz.com/wp-content/uploads/2021/12/4da69a96349c72f2664a1370be671237.jpg") no-repeat center/contain;
+      animation: obstacle-flicker 5s infinite;
+    }
+     .obstacle::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        border-radius: 50%;
+        box-shadow: inset 0 0 10px var(--danger-glow);
+        opacity: 0.7;
+     }
+
+    #msg, #passenger {
+        margin-top: 15px;
+        font-size: 18px;
+        min-height: 25px;
+        transition: opacity 0.5s, transform 0.5s;
+        text-transform: uppercase;
+    }
+    
+    #msg { color: var(--primary-glow); text-shadow: 0 0 15px var(--primary-glow); }
+    #passenger { color: var(--passenger-glow); text-shadow: 0 0 10px var(--passenger-glow); }
+    #instructions { margin-top: 20px; font-size: 14px; color: #aaa; max-width: 90vw; }
+
+    #resetBtn {
+        margin-top: 20px; padding: 12px 24px; font-family: 'Orbitron', sans-serif;
+        font-size: 16px; background-color: transparent; color: var(--primary-glow); 
+        border: 2px solid var(--primary-glow);
+        border-radius: 8px; cursor: pointer; text-shadow: 0 0 5px #fff;
+        box-shadow: 0 0 15px var(--primary-glow); transition: all 0.3s;
+        text-transform: uppercase;
+    }
+    #resetBtn:hover { 
+        transform: scale(1.05); 
+        box-shadow: 0 0 25px var(--primary-glow); 
+        background-color: rgba(0, 255, 234, 0.2);
+    }
+    .hidden { display: none; }
+
+    /* === استایل کنترلرهای لمسی === */
+    #touch-controls {
+        display: none; position: fixed; bottom: 30px; right: 30px;
+        left: auto; transform: none; z-index: 100;
+    }
+    #touch-controls .row { display: flex; justify-content: center; }
+    #touch-controls button {
+        width: 60px; height: 60px; margin: 5px;
+        border: 2px solid var(--primary-glow); border-radius: 50%;
+        background: rgba(0, 255, 234, 0.1); backdrop-filter: blur(5px);
+        color: var(--primary-glow); font-size: 24px; font-weight: bold;
+        cursor: pointer; user-select: none;
+        transition: all 0.2s;
+    }
+    #touch-controls button:active {
+        background: rgba(0, 255, 234, 0.3); transform: scale(0.95);
+    }
+    .placeholder { width: 70px; height: 70px; }
+
+    /* === واکنش‌گرایی برای موبایل === */
+    @media (max-width: 768px) {
+        body { padding: 10px 10px 150px; justify-content: start; }
+        .container { padding: 15px; border: none; background: none; box-shadow: none; backdrop-filter: none;}
+        h2 { font-size: 1.5em; }
+        :root { --game-size: 90vw; --cell-size: calc(var(--game-size) / 15); }
+        .city { font-size: 10px; padding: 2px 4px; }
+        #instructions { display: none; }
+        #touch-controls { display: block; }
+    }
+
+    /* === انیمیشن‌ها === */
+    @keyframes pulsate-title { 0%, 100% { text-shadow: 0 0 15px var(--primary-glow), 0 0 25px var(--primary-glow); } 50% { text-shadow: 0 0 25px var(--primary-glow), 0 0 40px var(--primary-glow); } }
+    @keyframes city-beacon { 0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0.3; } 70% { transform: translate(-50%, -50%) scale(2); opacity: 0; } 100% { opacity: 0; } }
+    @keyframes engine-glow { 0%, 100% { transform: translateX(-50%) scale(1); } 50% { transform: translateX(-50%) scale(1.2); } }
+    @keyframes obstacle-flicker { 0%, 100% { opacity: 1; } 50% { opacity: 0.8; } 51% { opacity: 1; } 53% { opacity: 0.7; } 55% { opacity: 1; } }
+    .shake { animation: shake-animation 0.4s; }
+    @keyframes shake-animation { 10%, 90% { transform: translateX(-2px); } 20%, 80% { transform: translateX(2px); } 30%, 50%, 70% { transform: translateX(-4px); } 40%, 60% { transform: translateX(4px); } }
+  
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>🚗 بازی نژادعلی 🚗</h2>
+    <div id="game">
+      <div id="car"></div>
+    </div>
+    <div id="msg">با کلیدهای جهت‌نما حرکت کنید</div>
+    <div id="passenger"></div>
+    <button id="resetBtn" class="hidden">ماموریت دوباره</button>
+    <div id="instructions">
+      <strong>راهنما:</strong> از "چولیچا" شروع کن، "نژادعلی" رو از "تهران" سوار کن و به "ارومیه" برسون!
+    </div>
+  </div>
+
+  <div id="touch-controls">
+    <div class="row"><button id="btn-up">▲</button></div>
+    <div class="row"><button id="btn-right">▶</button><div class="placeholder"></div><button id="btn-left">◀</button></div>
+    <div class="row"><button id="btn-down">▼</button></div>
+  </div>
+
+  <audio id="bgMusic" src="https://dl.musiclazem.ir/1402/03/12/Ashkin%200098%20-%20Mikham%20Beresonamet.mp3" loop></audio>
+  <audio id="hornSound" src="https://actions.google.com/sounds/v1/transportation/car_horn.ogg"></audio>
+  <audio id="successSound" src="https://actions.google.com/sounds/v1/achievements/achievement_bell.ogg"></audio>
+  <audio id="pickupSound" src="https://actions.google.com/sounds/v1/doors/door_open_close.ogg"></audio>
+  
+  <script>
+    const game = document.getElementById("game");
+    const car = document.getElementById("car");
+    const msg = document.getElementById("msg");
+    const passenger = document.getElementById("passenger");
+    const resetBtn = document.getElementById("resetBtn");
+    
+    const bgMusic = document.getElementById("bgMusic");
+    const hornSound = document.getElementById("hornSound");
+    const successSound = document.getElementById("successSound");
+    const pickupSound = document.getElementById("pickupSound");
+
+    let gameSize = 600;
+    let step = 40;
+    let cellCount = gameSize / step;
+
+    let carX, carY;
+    let hasPassenger = false;
+    let gameStarted = false;
+    let gameOver = false;
+    const cities = [];
+    const obstacles = [];
+
+    // === START: NEW GAME RULES ===
+    const START_CITY = "چولیچا";
+    const PICKUP_CITY = "تهران";
+    const DESTINATION_CITY = "ارومیه";
+    // === END: NEW GAME RULES ===
+
+    function adjustGameSize() {
+        if (window.innerWidth <= 768) {
+            const newSize = game.offsetWidth;
+            const cellSize = newSize / 15;
+            step = cellSize;
+            gameSize = cellSize * 15;
+            cellCount = 15;
+        } else {
+            gameSize = 600;
+            step = 40;
+            cellCount = 15;
+        }
+    }
+
+    function rand() {
+      return Math.floor(Math.random() * cellCount) * step;
+    }
+
+    function showMsg(text, isError = false) {
+        msg.style.opacity = '0';
+        msg.style.transform = 'translateY(10px)';
+        msg.style.color = isError ? 'var(--danger-glow)' : 'var(--primary-glow)';
+        setTimeout(() => { 
+            msg.innerText = text; 
+            msg.style.opacity = '1'; 
+            msg.style.transform = 'translateY(0)';
+        }, 300);
+    }
+    
+    function showPassengerStatus(text) {
+        passenger.style.opacity = '0';
+        passenger.style.transform = 'translateY(10px)';
+        setTimeout(() => { 
+            passenger.innerText = text; 
+            passenger.style.opacity = '1';
+            passenger.style.transform = 'translateY(0)';
+        }, 300);
+    }
+
+    function setupGame() {
+        adjustGameSize();
+        
+        const cityData = [ 
+            { name: DESTINATION_CITY, x: rand(), y: rand() }, 
+            { name: PICKUP_CITY, x: rand(), y: rand() }, 
+            { name: START_CITY, x: rand(), y: rand() }
+        ];
+        
+        // Ensure cities don't overlap
+        while(new Set(cityData.map(c => `${c.x},${c.y}`)).size !== 3) {
+            cityData[1].x = rand(); cityData[1].y = rand();
+            cityData[2].x = rand(); cityData[2].y = rand();
+        }
+
+        cities.push(...cityData);
+
+        cities.forEach(city => {
+            const div = document.createElement("div");
+            div.className = "city"; 
+            div.innerText = city.name;
+            div.style.left = city.x + "px"; 
+            div.style.top = city.y + "px";
+            
+            if (city.name === START_CITY) div.classList.add('city-start');
+            else if (city.name === PICKUP_CITY) div.classList.add('city-pickup');
+            else if (city.name === DESTINATION_CITY) div.classList.add('city-destination');
+            
+            game.appendChild(div);
+        });
+
+        const startPoint = cities.find(c => c.name === START_CITY);
+        carX = startPoint.x;
+        carY = startPoint.y;
+        car.style.left = carX + "px"; 
+        car.style.top = carY + "px";
+
+        for (let i = 0; i < 15; i++) {
+            const ox = rand(); 
+            const oy = rand();
+            const isCity = cities.some(c => c.x === ox && c.y === oy);
+            const isStart = (ox === carX && oy === carY);
+            if (!isCity && !isStart) { obstacles.push({ x: ox, y: oy }); }
+        }
+
+        obstacles.forEach(ob => {
+            const div = document.createElement("div");
+            div.className = "obstacle";
+            div.style.left = ob.x + "px"; 
+            div.style.top = ob.y + "px";
+            game.appendChild(div);
+        });
+        showPassengerStatus("مسافری در ماشین نیست");
+    }
+
+    function moveCar(direction) {
+        if (gameOver) return;
+
+        if (!gameStarted) {
+            bgMusic.volume = 0.3;
+            bgMusic.play().catch(e => console.log("کاربر باید با صفحه تعامل داشته باشد تا موسیقی پخش شود."));
+            gameStarted = true;
+        }
+
+        let newX = carX;
+        let newY = carY;
+
+        if (direction === "ArrowUp") newY -= step;
+        else if (direction === "ArrowDown") newY += step;
+        else if (direction === "ArrowLeft") { newX -= step; car.style.transform = 'scaleX(1)'; }
+        else if (direction === "ArrowRight") { newX += step; car.style.transform = 'scaleX(-1)'; }
+        else return;
+
+        if (newX < 0 || newY < 0 || newX >= gameSize || newY >= gameSize) {
+            showMsg("مراقب باش از جاده خارج نشی!", true);
+            return;
+        };
+
+        if (obstacles.some(ob => ob.x === newX && ob.y === newY)) {
+            showMsg("⛔ مسیر بسته است!", true);
+            game.classList.add('shake');
+            setTimeout(() => game.classList.remove('shake'), 400);
+            return;
+        }
+
+        carX = newX; carY = newY;
+        car.style.left = carX + "px"; 
+        car.style.top = carY + "px";
+        checkCityInteraction();
+    }
+
+    function checkCityInteraction() {
+        const currentCity = cities.find(city => Math.abs(carX - city.x) < 1 && Math.abs(carY - city.y) < 1);
+        if (!currentCity) return;
+
+        hornSound.play();
+
+        // === NEW LOGIC IMPLEMENTED HERE ===
+        if (currentCity.name === PICKUP_CITY) {
+            if (!hasPassenger) {
+                hasPassenger = true; 
+                pickupSound.play();
+                car.classList.add("has-passenger-glow");
+                showPassengerStatus(`👤 نژادعلی سوار شد! مقصد: ${DESTINATION_CITY}`);
+                showMsg("عالیه! برو به سمت مقصد.");
+            } else { 
+                showMsg("نژادعلی از قبل سوار شده!"); 
+            }
+        } else if (currentCity.name === START_CITY) {
+            showMsg("اینجا نقطه شروع ماموریت بود.");
+        } else if (currentCity.name === DESTINATION_CITY) {
+            if (hasPassenger) {
+                successSound.play();
+                showMsg(`🎉 ماموریت با موفقیت انجام شد!`);
+                showPassengerStatus(`✅ نژادعلی به ${DESTINATION_CITY} رسید.`);
+                car.classList.remove("has-passenger-glow");
+                gameOver = true;
+                resetBtn.classList.remove("hidden");
+            } else { 
+                showMsg(`اول باید نژادعلی رو از ${PICKUP_CITY} سوار کنی!`, true); 
+            }
+        }
+    }
+
+    document.addEventListener("keydown", e => moveCar(e.key));
+    document.getElementById('btn-up').addEventListener('click', () => moveCar('ArrowUp'));
+    document.getElementById('btn-down').addEventListener('click', () => moveCar('ArrowDown'));
+    document.getElementById('btn-left').addEventListener('click', () => moveCar('ArrowLeft'));
+    document.getElementById('btn-right').addEventListener('click', () => moveCar('ArrowRight'));
+    resetBtn.addEventListener('click', () => location.reload());
+
+    window.addEventListener('resize', setupGame);
+    
+    // Initial setup
+    // A small delay to ensure layout is calculated, especially for mobile
+    setTimeout(setupGame, 100);
+  </script>
+</body>
+  </html>
+  
