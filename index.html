@@ -113,59 +113,77 @@
         }
         
         /* کد جدید برای استایل منو */
-        .menu {
-            position: absolute;
-            top: 50%;
-            max-height: 80vh;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(0); /* در ابتدا مخفی و کوچک */
-            opacity: 0;
-            overflow-y: scroll;
-            z-index: 99999;
-            background: rgba(26, 3, 71, 0.7);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 40px;
-            text-align: center;
-            border: 2px solid #a259ff;
-            box-shadow: 0 0 30px #a259ff;
-            transition: all 0.5s cubic-bezier(0.18, 0.89, 0.32, 1.28);
-            pointer-events: none; /* در حالت مخفی کلیک نشود */
-        }
+    .menu {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.9);
+    opacity: 0;
+    z-index: 9999;
+    background: rgba(20, 20, 40, 0.8);
+    backdrop-filter: blur(12px);
+    border-radius: 20px;
+    padding: 30px;
+    text-align: center;
+    border: 2px solid rgba(162, 89, 255, 0.6);
+    box-shadow: 0 0 40px rgba(162, 89, 255, 0.5);
+    transition: all 0.4s ease-in-out;
+    width: 90%;
+    max-width: 600px;
+    pointer-events: none;
+}
 
-        .menu.show {
-            opacity: 1;
-            transform: translate(-50%, -50%) scale(1); /* نمایش با انیمیشن */
-            pointer-events: auto;
-        }
 
-        .menu h2 {
-            color: #f0f0f0;
-            font-size: 3rem;
-            margin-bottom: 30px;
-            text-shadow: 0 0 10px #fff;
-        }
+     .menu.show {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+    pointer-events: auto;
+}
 
-        .menu button {
-            font-family: 'Lalezar', sans-serif;
-            display: block;
-            width: 100%;
-            padding: 15px;
-            margin-bottom: 15px;
-            font-size: 1.8rem;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            background: #a259ff;
-            color: #fff;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(162, 89, 255, 0.4);
-        }
+      .menu h2 {
+    color: #fff;
+    font-size: 2rem;
+    margin-bottom: 20px;
+    text-shadow: 0 0 15px #a259ff;
+}
 
-        .menu button:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(162, 89, 255, 0.6);
-        }
+ .menu button {
+    font-family: 'Lalezar', sans-serif;
+    padding: 15px 20px;
+    font-size: 1.3rem;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    background: linear-gradient(135deg, #a259ff, #6a11cb);
+    color: #fff;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(162, 89, 255, 0.4);
+}
+
+.menu button:hover {
+    transform: translateY(-4px) scale(1.05);
+    box-shadow: 0 10px 25px rgba(162, 89, 255, 0.7);
+}
+.menu-buttons {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 15px;
+}
+@media (min-width: 480px) {
+    .menu-buttons {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (min-width: 768px) {
+    .menu-buttons {
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+}
+
+
+
+        
     </style>
 </head>
 <body>
@@ -176,16 +194,17 @@
         <p id="greeting-text">403</p>
     </div>
 
-    <div class="menu" id="day-menu">
-        <h2>یک روز را انتخاب کن</h2>
-           <button id="btn-day9"😶‍🌫️ روز نهم 🥺</button>
-   <button id="btn-day8">😗 روز هشتم 🦇</button>
+<div class="menu" id="day-menu">
+  <h2>یک روز را انتخاب کن</h2>
+  <div class="menu-buttons">
+    <button id="btn-day9">😶‍🌫️ روز نهم 🥺</button>
+    <button id="btn-day8">😗 روز هشتم 🦇</button>
     <button id="btn-day6">✨ روز ششم ✨</button>
     <button id="btn-day4">✨ روز چهارم ✨</button>
     <button id="btn-day3">✨ روز سوم ✨</button>
     <button id="btn-day2">🎁 روز دوم 🎁</button>
-
-    </div>
+  </div>
+</div>
 
     <audio id="music" src="music.mp3" loop></audio>
 
@@ -393,6 +412,7 @@ btnDay4.addEventListener('click', goToDay4);
     </script>
 </body>
 </html>
+
 
 
 
