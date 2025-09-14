@@ -50,6 +50,12 @@
             background-color: #dc3545;
             color: white;
         }
+        #my-video {
+    width: 100%;
+    height: auto;
+    max-width: 600px; /* نهایتاً 600 پیکسل مثل دسکتاپ */
+    border-radius: 10px;
+}
         /* کلاس برای مخفی کردن عناصر */
         .hidden {
             display: none;
@@ -74,7 +80,7 @@
         </div>
 
         <div id="video-section" class="hidden">
-            <video id="my-video" width="600" controls>
+            <video id="my-video" controls>
                 <source src="nomokham.mp4" type="video/mp4">
                 مرورگر شما این ویدئو را پشتیبانی نمی‌کند.
             </video>
@@ -109,3 +115,4 @@
 </body>
 
 </html>
+
