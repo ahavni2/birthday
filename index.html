@@ -197,6 +197,7 @@
 <div class="menu" id="day-menu">
   <h2>یک روز را انتخاب کن</h2>
   <div class="menu-buttons">
+      <button id="btn-day12">❄️ روز دوازدهم 🫠</button>
     <button id="btn-day9">😶‍🌫️ روز نهم 🥺</button>
     <button id="btn-day8">😗 روز هشتم 🦇</button>
     <button id="btn-day6">✨ روز ششم ✨</button>
@@ -251,7 +252,7 @@ const btnDay4 = document.getElementById('btn-day4');
 
         const btnDay6 = document.getElementById('btn-day6');
         // === بخش دوم: تعریف توابع اصلی ===
-
+const btnDay12 = document.getElementById('btn-day12');
         const btnDay9 = document.getElementById('btn-day9');
         // این تابع جشن روز دوم را شروع می‌کند (همان کاری که قبلاً با کلیک روی هدیه انجام می‌شد)
         function startDay2Celebration() {
@@ -288,6 +289,11 @@ function goToDay9() {
             // نام فایل HTML روز سوم را در اینجا قرار دهید
             window.location.href = 'day6.html'; 
         }
+
+                        function goToDay12() {
+            // نام فایل HTML روز سوم را در اینجا قرار دهید
+            window.location.href = 'day12.html'; 
+        }
         // === بخش سوم: اتصال رویدادها (Event Listeners) ===
 
         // 1. رویداد کلیک روی هدیه: فقط منو را نشان می‌دهد
@@ -306,6 +312,7 @@ function goToDay9() {
         btnDay3.addEventListener('click', goToDay3);
 btnDay4.addEventListener('click', goToDay4);
         btnDay9.addEventListener('click', goToDay9);
+                btnDay12.addEventListener('click', goToDay12);
         btnDay6.addEventListener('click', goToDay6);
         btnDay8.addEventListener('click', goToDay8);
         // 3. بقیه رویدادهای مربوط به پلیر موسیقی (بدون تغییر)
@@ -412,6 +419,7 @@ btnDay4.addEventListener('click', goToDay4);
     </script>
 </body>
 </html>
+
 
 
 
