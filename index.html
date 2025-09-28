@@ -197,6 +197,10 @@
 <div class="menu" id="day-menu">
   <h2>یک روز را انتخاب کن</h2>
   <div class="menu-buttons">
+
+
+      <button id="btn-a">😊</button>
+      
             <button id="btn-day17">🗺️ روز هفدهم 🚌</button>
       <button id="btn-day12">❄️ روز دوازدهم 🫠</button>
     <button id="btn-day9">😶‍🌫️ روز نهم 🥺</button>
@@ -252,6 +256,10 @@ const btnDay4 = document.getElementById('btn-day4');
         const btnDay17 = document.getElementById('btn-day17');
                 const btnDay8 = document.getElementById('btn-day8');
 
+const btnA = document.getElementById('btn-a');
+
+
+        
         const btnDay6 = document.getElementById('btn-day6');
         // === بخش دوم: تعریف توابع اصلی ===
 const btnDay12 = document.getElementById('btn-day12');
@@ -283,6 +291,14 @@ function goToDay9() {
             // نام فایل HTML روز سوم را در اینجا قرار دهید
             window.location.href = 'day8.html'; 
         }
+
+ function goToA() {
+            // نام فایل HTML روز سوم را در اینجا قرار دهید
+            window.location.href = 'a.html'; 
+        }
+
+
+        
         function goToDay4() {
             // نام فایل HTML روز سوم را در اینجا قرار دهید
             window.location.href = 'day4.html'; 
@@ -323,6 +339,8 @@ btnDay4.addEventListener('click', goToDay4);
         btnDay6.addEventListener('click', goToDay6);
                 btnDay17.addEventListener('click', goToDay17);
         btnDay8.addEventListener('click', goToDay8);
+ btnA.addEventListener('click', goToA);
+        
         // 3. بقیه رویدادهای مربوط به پلیر موسیقی (بدون تغییر)
         function formatTime(seconds) {
             const minutes = Math.floor(seconds / 60);
@@ -427,6 +445,7 @@ btnDay4.addEventListener('click', goToDay4);
     </script>
 </body>
 </html>
+
 
 
 
